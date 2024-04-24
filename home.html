@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Management</title>
+    <link rel="stylesheet" href="Css/home.css">
+    <link rel="shortcut icon" href="favicon_io/android-chrome-192x192.png" type="image/x-icon">
+    <style>
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #d40606;
+            width: 80%;
+            text-align: center;
+        }
+
+        /* Laundry form styles */
+#addLaundryForm {
+    display: none;
+    padding: 20px;
+    background-color: #fefefe;
+    border: 5px solid #666;
+    width: 80%;
+    margin: 20px auto;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+}
+
+#laundryList {
+    margin-top: 20px;
+    text-align: left;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Custom input number styles */
+.number-input {
+    width: auto; /* Adjust as necessary */
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: inline-block;
+}
+
+.number-input button {
+    padding: 3px 8px;
+    background-color: #f1f1f1;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.number-input button:hover {
+    background-color: #ddd;
+}
+
+.number-input input[type="number"] {
+    width: 50px;
+    height:50px;
+    border: none;
+    text-align: center;
+    outline: none;
+    vertical-align: top;
+    height: 20px;
+}
+
+/* Back button specific style */
+.back-button {
+    background-color: #3498db; /* Blue */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+
+.back-button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+}
+.number-input button.increase {
+    background-color: #4CAF50; /* Green for positive action */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px; /* Rounded corners for a smooth look */
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.number-input button.increase:hover {
+    background-color: #388E3C; /* Darker green on hover */
+}
+
+.number-input button.increase:active {
+    background-color: #2E7D32; /* Even darker green when pressed */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+button.add-button {
+    background-color: #2196F3; /* Blue for primary action buttons */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px; /* Rounded corners for a smooth look */
+    transition: background-color 0.3s ease;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16);
+}
+
+button.add-button:hover {
+    background-color: #1976D2; /* Darker blue on hover */
+}
+
+button.add-button:active {
+    background-color: #1565C0; /* Even darker blue when pressed */
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.3);
+}
+.number-input button.decrease {
+    background-color: #f44336; /* Red for negative actions */
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 3px; /* Rounded corners for a smooth look */
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.number-input button.decrease:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+}
+
+.number-input button.decrease:active {
+    background-color: #c62828; /* Even darker red when pressed */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+        /* Delete button styles */
+        .delete-button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            padding: 5px;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+       .table-centered {
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+    border-collapse: collapse;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.table-centered th {
+    background-color: #f2f2f2;
+    color: #333;
+    font-weight: bold;
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.table-centered td {
+    border-bottom: 1px solid #ddd;
+    padding: 10px 15px;
+    color: #666;
+}
+
+.table-centered tr:hover {
+    background-color: #f9f9f9;
+}
+
+.table-centered tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.table-centered tr:nth-child(odd) {
+    background-color: #fff;
+}
+
+.table-centered thead th {
+    position: sticky;
+    top: 0;
+    background-color: #e1e1e1;
+    z-index: 10;
+}
+
+    </style>
+</head>
+<body>
+<div id="homeContainer" class="container hidden">
+    <center>  <img src="GEHU-logo 7.png" height="121" width="425"></center>
+    <h1>Laundry Management System</h1>
+    <div class="cards-container">
+        <div class="card" id="laundry-tips-card">
+            <h3>Profile <img width="30" height="30" src="profile.png" alt="administrator-male"/></h3>
+            <p>Efficient, user-friendly online platform for hassle-free laundry services management.</p>
+        </div>
+        <div class="card" id="did-you-know-card">
+            <h3>Add Laundry<img width="30" height="30" src="add.png" alt="Add the Laundry"/></h3>
+            <p>Schedule, track, and manage services efficiently online</p>
+        </div>
+        <div class="card" id="stain-removal-card">
+            <h3>Complaint Raise<img width="30" height="30" src="complaint.png" alt="Add the Laundry"/></h3>
+            <p>Submit laundry service issues for quick resolution and customer satisfaction.</p>
+        </div>
+        <div class="card" id="fabric-care-card">
+            <h3>History<img width="30" height="30" src="history.png" alt="Add the Laundry"/></h3>
+            <p>Track, analyze, and optimize laundry operations for efficiency and growth.</p>
+        </div>
+    </div>
+
+    <div id="addLaundryForm">
+        <h2>Add Laundry</h2>
+        <input type="text" id="laundryName" placeholder="Enter Laundry Name" style="border-radius: 5px; font-size: 15px; border: 3px solid black;">
+        <br><br><br>
+        <div class="number-input">
+            <button class="decrease" onclick="decreaseQuantity()">-</button>
+            <input type="number" id="laundryQuantity" value="1" min="1" style=" width: 66px; text-align: center;">
+            <button class="increase" onclick="increaseQuantity()">+</button>
+        </div>
+        <br><br><br>
+        <button class="add-button" onclick="addLaundryItem()">Add</button>
+        <br>
+
+        <div id="laundryList"></div>
+        <p>Total Count: <span id="totalCount">0</span></p>
+        <button class="back-button" onclick="submitLaundry()">Submit ✅</button>
+    </div>
+
+    <div id="laundry-tips-info" class="info-page" style="display: none;">
+        <h2>Profile <img width="30" height="30" src="profile.png" alt="administrator-male"/></h2>
+
+
+ <div id="userDetails">
+     Loading ....
+        </div>
+
+        <button class="back-button">Back</button>
+    </div>
+
+
+    <div id="did-you-know-info" class="info-page" style="display: none;">
+       
+        <p> </p>
+        <button class="back-button">Back</button>
+    </div>
+
+
+
+
+    <div id="fabric-care-info" class="info-page" style="display: none;">
+        <h2>History</h2>
+        <p>Loading.....</p>
+        <button class="back-button">Back</button>
+    </div>
+
+    <br>
+<div id="stain-removal-info" class="info-page" style="display: none;">
+    <h2>Complaint Raise</h2>
+    <form id="complaintForm">
+        <label for="complaintText">Describe your issue:</label>
+        <textarea id="complaintText" name="complaintText" rows="4" cols="50" required></textarea>
+        <br>
+        <button type="submit" class="submit-button">Submit Complaint</button>
+    </form>
+    <p id="noComplaint" style="display: none;">No Complaint</p>
+    <button class="back-button" onclick="closeInfoPage()">Back</button>
+</div>
+    <button class="logout-button" onclick="logoutUser()">Logout</button>
+
+    <!-- Modal message box -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <p id="logoutMessage" class="message"></p>
+        </div>
+    </div>
+
+</div> <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+
+    <script>
+        // Your Firebase configuration
+        var firebaseConfig = {
+          apiKey: "AIzaSyDmGMXdJ28PBTD987d7j7AttjoHxJ7z-lk",
+    authDomain: "lms-gehu.firebaseapp.com",
+    databaseURL: "https://lms-gehu-default-rtdb.firebaseio.com",
+    projectId: "lms-gehu",
+    storageBucket: "lms-gehu.appspot.com",
+    messagingSenderId: "979024588330",
+    appId: "1:979024588330:web:c03b49f18b9b24c67e1d53"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const d = new Date();
+        const date_day = d.getDate() + "-" + d.getMonth() + "-" + d.getFullYear();
+// Function to display laundry history
+
+        // Function to fetch and display user details
+        function displayUserInfo(userId) {
+            const userDetailsDiv = document.getElementById('userDetails');
+            database.ref('users/' + userId).once('value').then(function (snapshot) {
+                const userData = snapshot.val();
+                if (userData) {
+                    userDetailsDiv.innerHTML = `
+                        <div class="user-info">
+                    <table class="table-centered" border="1">
+                        <tr>
+                            <th>Name</th>
+                            <td>${userData.full_name}</td>
+                        </tr>
+                        <tr>
+                            <th>Email</th>
+                            <td>${userData.email}</td>
+                        </tr>
+                        <tr>
+                            <th>Phone Number</th>
+                            <td>${userData.phone_number}</td>
+                        </tr>
+                        <tr>
+                            <th>Hostel ID</th>
+                            <td>${userData.hostel_id}</td>
+                        </tr>
+                        <tr>
+                            <th>Hostel Name</th>
+                            <td>${userData.hostel_name}</td>
+                        </tr>
+                        <tr>
+                            <th>Date</th>
+                            <td>${date_day}</td>
+                        </tr>
+                    </table>
+                </div>
+                    `;
+                }
+            });
+        }
+
+        // Function to add listeners to each card
+        function addCardListener(cardId, infoPageId) {
+            document.getElementById(cardId).addEventListener('click', function () {
+                document.querySelector('.cards-container').style.display = 'none';
+                document.getElementById(infoPageId).style.display = 'block';
+                if (infoPageId === 'laundry-tips-info') {
+                    // Display user details when profile section is clicked
+                    const userId = firebase.auth().currentUser.uid;
+                    displayUserInfo(userId);
+                } else if (infoPageId === 'did-you-know-info') {
+                    // Show the add laundry form when "Add Laundry" section is clicked
+                    openAddLaundryForm();
+                }
+            });
+        }
+
+        // Function to open the add laundry form
+        function openAddLaundryForm() {
+            document.getElementById('addLaundryForm').style.display = 'block';
+        }
+
+        // Function to close the add laundry form
+        function closeAddLaundry() {
+            document.getElementById('addLaundryForm').style.display = 'none';
+        }
+
+        // Function to add listeners to back buttons
+        function addBackButtonListener() {
+            document.querySelectorAll('.back-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    document.querySelector('.info-page').style.display = 'none'; // Hide any visible info page
+                    document.querySelector('.cards-container').style.display = 'flex';
+                    // Ensure all info pages are hidden when going back
+                    document.querySelectorAll('.info-page').forEach(page => {
+                        page.style.display = 'none';
+                    });
+                    // Close the add laundry form if open
+                    closeAddLaundry();
+                });
+            });
+        }
+
+        // Initialize card listeners
+        addCardListener('laundry-tips-card', 'laundry-tips-info');
+        addCardListener('did-you-know-card', 'did-you-know-info');
+        addCardListener('stain-removal-card', 'stain-removal-info');
+        addCardListener('fabric-care-card', 'fabric-care-info');
+
+        // Initialize back button listeners
+        addBackButtonListener();
+
+        // Function to decrease laundry quantity
+        function decreaseQuantity() {
+            const input = document.getElementById('laundryQuantity');
+            const value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+
+        // Function to increase laundry quantity
+        function increaseQuantity() {
+            const input = document.getElementById('laundryQuantity');
+            const value = parseInt(input.value);
+            input.value = value + 1;
+        }
+
+        const laundryItems = [];
+
+        // Function to add a laundry item
+        function addLaundryItem() {
+            const name = document.getElementById('laundryName').value;
+            const quantity = parseInt(document.getElementById('laundryQuantity').value);
+
+            if (!name) {
+                alert("Please enter laundry name.");
+                return;
+            }
+
+            const newItem = { name, quantity };
+            laundryItems.push(newItem);
+            displayLaundryItems();
+        }
+
+        // Function to display laundry items
+        function displayLaundryItems() {
+            const laundryListDiv = document.getElementById('laundryList');
+            laundryListDiv.innerHTML = '';
+            let totalCount = 0;
+            laundryItems.forEach((item, index) => {
+                const listItem = document.createElement('div');
+                listItem.textContent = `${item.name}: ${item.quantity}`;
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = '❌';
+                deleteButton.classList.add('delete-button');
+                deleteButton.addEventListener('click', () => deleteLaundryItem(index));
+                listItem.appendChild(deleteButton);
+                laundryListDiv.appendChild(listItem);
+                totalCount += item.quantity;
+            });
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        // Function to delete a laundry item
+        function deleteLaundryItem(index) {
+            laundryItems.splice(index, 1);
+            displayLaundryItems();
+        }
+// Function to submit laundry items
+
+function submitLaundry() {
+    if (laundryItems.length === 0) {
+        alert("Please add at least one laundry item.");
+        return;
+    }
+
+    // Get the current date and time
+    const currentDate = new Date();
+    const timeKey = currentDate.getHours() + ":" + currentDate.getMinutes() + ":" + currentDate.getSeconds();
+    const dateKey = currentDate.getDate() + "-" + (currentDate.getMonth() + 1) + "-" + currentDate.getFullYear();
+
+    // Get the user ID
+    const userId = firebase.auth().currentUser.uid;
+
+    // Create a reference to the "Laundry" node under the user's details
+    const laundryRef = database.ref('users/' + userId + '/Laundry/' + 'Laundary Date :- '+dateKey);
+
+    // Calculate the total number of unique laundry items and their quantities
+    const uniqueLaundryItems = {};
+    let totalCount = 0;
+
+    laundryItems.forEach(item => {
+        if (uniqueLaundryItems[item.name]) {
+            uniqueLaundryItems[item.name] += item.quantity;
+        } else {
+            uniqueLaundryItems[item.name] = item.quantity;
+        }
+    });
+
+    Object.keys(uniqueLaundryItems).forEach(itemName => {
+        totalCount += uniqueLaundryItems[itemName];
+    });
+
+    // Check if laundry items for the current date already exist
+    laundryRef.once('value', snapshot => {
+        if (!snapshot.exists()) {
+            // If no laundry items exist for the current date, add them
+            const laundryObject = {
+                time:timeKey,
+                total: totalCount
+            };
+
+            Object.keys(uniqueLaundryItems).forEach(itemName => {
+                laundryObject[itemName] = uniqueLaundryItems[itemName];
+            });
+
+            // Push the laundry object to the database
+            laundryRef.set(laundryObject);
+
+            // Show success message
+            alert("Laundry items submitted successfully!");
+
+            // Clear the laundryItems array and update the UI
+            laundryItems.length = 0;
+            displayLaundryItems();
+        } else {
+            // Show alert if laundry items for the current date already exist
+            alert("Laundry items for this date have already been submitted.");
+        }
+    });
+}
+
+
+// Function to display laundry history
+
+
+
+        // Logout user function
+        function logoutUser() {
+            auth.signOut().then(() => {
+                // Show modal message
+                const modal = document.getElementById('myModal');
+                const message = document.getElementById('logoutMessage');
+                message.textContent = "Logged out successfully";
+                modal.style.display = "block";
+
+                // Hide the modal after 3 seconds
+                setTimeout(() => {
+                    modal.style.display = "none";
+                }, 3000);
+
+                // Redirect to login page
+                window.location.replace("index.html");
+            }).catch((error) => {
+                alert("Error signing out: ", error);
+            });
+        }
+
+        // Function to update user interface based on authentication state
+        function updateUserInterface(user) {
+            if (user) {
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('registerContainer').style.display = 'none';
+                document.getElementById('homeContainer').style.display = 'block';
+                // Optionally, update home container content or show a welcome message
+            } else {
+                window.location.replace("index.html");
+            }
+        }
+
+        // Listen for authentication state changes
+        auth.onAuthStateChanged(user => {
+            console.log("Auth state changed:", user);
+            updateUserInterface(user);
+        });
+
+
+
+    </script>
+<script>
+    function displayLaundryHistory() {
+    const userId = firebase.auth().currentUser.uid;
+    const historyDiv = document.getElementById('fabric-care-info');
+    if (!historyDiv) return; // Safety check
+
+    const laundryRef = database.ref('users/' + userId + '/Laundry/');
+    laundryRef.once('value', snapshot => {
+        let historyContent = '<h2>Laundry History</h2>';
+        if (snapshot.exists()) {
+            snapshot.forEach(dateSnapshot => {
+                const dateKey = dateSnapshot.key;
+                const laundryItems = dateSnapshot.val();
+                historyContent += `<h3>${dateKey}</h3><table class="table-centered" border="1"><thead><tr><th>Item</th><th>Quantity</th></tr></thead><tbody>`;
+                Object.keys(laundryItems).forEach(item => {
+                    if (item !== 'time' && item !== 'total') {
+                        historyContent += `<tr><td>${item}</td><td>${laundryItems[item]}</td></tr>`;
+                    }
+                });
+                historyContent += `</tbody></table>`;
+            });
+        } else {
+            historyContent += '<p>No Laundry History Found</p>';
+        }
+        historyContent += '<button class="back-button" onclick="closeInfoPage()">Back</button>';
+        historyDiv.innerHTML = historyContent;
+    });
+}
+
+// Function to close the info page
+function closeInfoPage() {
+    const historyDiv = document.getElementById('fabric-care-info');
+    const cardsContainer = document.querySelector('.cards-container');
+    if (historyDiv && cardsContainer) {
+        historyDiv.style.display = 'none';
+        cardsContainer.style.display = 'flex';
+    }
+}
+
+// Add event listener to card for opening the info page
+function addCardListener(cardId, infoPageId) {
+    const card = document.getElementById(cardId);
+    const infoPage = document.getElementById(infoPageId);
+    if (card && infoPage) {
+        card.addEventListener('click', function () {
+            document.querySelector('.cards-container').style.display = 'none';
+            infoPage.style.display = 'block';
+            if (infoPageId === 'fabric-care-info') {
+                displayLaundryHistory(); // Fetch and display laundry history
+            }
+        });
+    } else {
+        console.error('One of the elements does not exist:', cardId, infoPageId);
+    }
+}
+
+// Example usage, assuming elements with these IDs exist in your HTML
+addCardListener('fabric-care-card', 'fabric-care-info');
+
+
+
+</script>
+<script>
+    document.getElementById('complaintForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+    var complaintText = document.getElementById('complaintText').value;
+    if (complaintText.trim() === "") {
+        alert("Please enter a valid complaint.");
+    } else {
+        // Here you can add the code to send the complaint to your server or process it as needed
+        alert("Your complaint has been submitted: " + complaintText);
+        document.getElementById('complaintText').value = ''; // Clear the form
+        document.getElementById('noComplaint').style.display = 'none'; // Hide "No Complaint" if it was visible
+    }
+});
+
+function closeInfoPage() {
+    var infoPage = document.getElementById('stain-removal-info');
+    var cardsContainer = document.querySelector('.cards-container');
+    if (infoPage && cardsContainer) {
+        infoPage.style.display = 'none';
+        cardsContainer.style.display = 'flex';
+    }
+}
+
+</script>
+</body>
+</html>
