@@ -28,79 +28,21 @@
             <li class="nav-item" role="presentation">
                 <a class="nav-link" id="contact-tab" data-toggle="pill" href="#contact" role="tab" aria-controls="contact" aria-selected="false">Complaints</a>
             </li>
-            <li class="nav-item" role="presentation">
-                <a class="nav-link" id="view-tab" data-toggle="pill" href="#view" role="tab" aria-controls="view" aria-selected="false">History</a>
-            </li>
+             
 
         </ul>
     </nav>
     <div class="tab-content" id="myTabContent">
         <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
             <div class="container">
-
-        <div id="notification"></div>
-        <div class="jumbotron">
-  <h1 class="display-4">Laundary Management System </h1>
-  <p class="lead">The Laundry Management System is a software solution designed to streamline and automate laundry operations in institutions such as hotels, hospitals, and universities. It facilitates scheduling, tracking, and managing laundry tasks, improving efficiency, reducing errors, and enhancing overall productivity in handling laundry services.</p>
-  <hr class="my-4">
-
-
-
-        <div class="table-responsive" id="userDataContainer" style="display: none;">
-            <h3 class="mt-5">User Data</h3>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Email</th>
-                        <th>Full Name</th>
-                        <th>Hostel ID</th>
-                        <th>Phone Number</th>
-                        <th>Hostel Name</th>
-                        <th>Last Login</th>
-                        <th>Total Laundry Items</th>
-                        <th>Verified</th>
-                    </tr>
-                </thead>
-                <tbody id="userData">
-                    <!-- Data will be dynamically populated here -->
-                </tbody>
-            </table>
-        </div>
-
-
-                <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">User Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Email:</strong> <span id="modalEmail"></span></p>
-                    <p><strong>Full Name:</strong> <span id="modalFullName"></span></p>
-                    <p><strong>Hostel ID:</strong> <span id="modalHostelID"></span></p>
-                    <p><strong>Phone Number:</strong> <span id="modalPhoneNumber"></span></p>
-                    <p><strong>Hostel Name:</strong> <span id="modalHostelName"></span></p>
-                    <p><strong>Last Login:</strong> <span id="modalLastLogin"></span></p>
-                    <h5>Laundry Items</h5>
-                    <div id="laundryDetails"></div>
-                    <p><strong>Verification Status:</strong> <span id="modalVerificationStatus"></span></p>
-                </div>
-                <div class="modal-footer">
-                    <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-    <button type="button" class="btn btn-danger" id="deleteButton">Delete</button>
-    <button type="button" class="btn btn-warning" id="notVerifiedButton">Not Verified</button>
-    <button type="button" class="btn btn-primary" id="verifyButton">Verify</button>
+                <div class="jumbotron jumbotron-fluid">
+  <div class="container">
+    <h1 class="display-4">Laundry Management System </h1>
+    <p class="lead">The Laundry Management System is a software solution designed to streamline and automate laundry operations in institutions such as hotels, hospitals, and universities. It facilitates scheduling, tracking, and managing laundry tasks, improving efficiency, reducing errors, and enhancing overall productivity in handling laundry services.</p>
+  </div>
 </div>
-
-                </div>
             </div>
         </div>
-    </div></div>
-        </div></div>
         <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
             <div class="container">
 
@@ -172,7 +114,7 @@
     </div>
         </div>
         <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-adf
+No Complaints 
     </div>
 
 
@@ -252,42 +194,40 @@ adf
         fetchUserData();
 
         // Function to search for user by phone number
-        // Function to search for user by phone number
-function searchUser() {
-    const phoneNumber = document.getElementById('phoneNumber').value.trim();
-    if (phoneNumber === '') {
-        alert('Please enter a phone number to search.');
-        return;
-    }
+        function searchUser() {
+            const phoneNumber = document.getElementById('phoneNumber').value.trim();
+            if (phoneNumber === '') {
+                alert('Please enter a phone number to search.');
+                return;
+            }
 
-    const userDataTbody = document.getElementById('userData');
-    userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Searching user data...</td></tr>';
+            const userDataTbody = document.getElementById('userData');
+            userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Searching user data...</td></tr>';
 
-    database.ref('users').orderByChild('phone_number').equalTo(phoneNumber).once('value', (snapshot) => {
-        const userData = snapshot.val();
-        if (userData) {
-            let html = '';
-            Object.keys(userData).forEach((userId) => {
-                const user = userData[userId];
-                let totalLaundryItems = 0;
-                if (user.Laundry) {
-                    Object.keys(user.Laundry).forEach(date => {
-                        totalLaundryItems += user.Laundry[date].total || 0;
+            database.ref('users').orderByChild('phone_number').equalTo(phoneNumber).once('value', (snapshot) => {
+                const userData = snapshot.val();
+                if (userData) {
+                    let html = '';
+                    Object.keys(userData).forEach((userId) => {
+                        const user = userData[userId];
+                        let totalLaundryItems = 0;
+                        if (user.Laundry) {
+                            Object.keys(user.Laundry).forEach(date => {
+                                totalLaundryItems += user.Laundry[date].total || 0;
+                            });
+                        }
+                        html += `<tr onclick="showUserDetails('${userId}')"><td>${user.email}</td><td>${user.full_name}</td><td>${user.hostel_id}</td><td>${user.phone_number}</td><td>${user.hostel_name}</td><td>${user.last_login}</td><td>${totalLaundryItems}</td><td>${user.verified ? 'Yes' : 'No'}</td></tr>`;
                     });
+                    userDataTbody.innerHTML = html;
+                    document.getElementById('userDataContainer').style.display = 'block';
+                } else {
+                    userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">No user found with this phone number</td></tr>';
                 }
-                html += `<tr onclick="showUserDetails('${userId}')"><td>${user.email}</td><td>${user.full_name}</td><td>${user.hostel_id}</td><td>${user.phone_number}</td><td>${user.hostel_name}</td><td>${user.last_login}</td><td>${totalLaundryItems}</td><td>${user.verified ? 'Yes' : 'No'}</td></tr>`;
+            }, (error) => {
+                console.error('Error searching user data:', error);
+                userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Error searching user data</td></tr>';
             });
-            userDataTbody.innerHTML = html;
-            document.getElementById('userDataContainer').style.display = 'block';
-        } else {
-            userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">No user found with this phone number</td></tr>';
-            alert('No user found with this phone number');
         }
-    }, (error) => {
-        console.error('Error searching user data:', error);
-        userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Error searching user data</td></tr>';
-    });
-}
 
         // Function to show detailed user information in a modal
         function showUserDetails(userId) {
@@ -415,38 +355,6 @@ function markAsNotVerified(userId) {
             console.error('Error fetching user details:', error);
         });
     }
-// Function to fetch and display user data
-function fetchAllUserData() {
-    const userDataTbody = document.getElementById('userData');
-    userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Loading user data...</td></tr>';
-
-    database.ref('users').once('value', (snapshot) => {
-        const userData = snapshot.val();
-        if (userData) {
-            let html = '';
-            Object.keys(userData).forEach((userId) => {
-                const user = userData[userId];
-                let totalLaundryItems = 0;
-                if (user.Laundry) {
-                    Object.keys(user.Laundry).forEach(date => {
-                        totalLaundryItems += user.Laundry[date].total || 0;
-                    });
-                }
-                html += `<tr onclick="showUserDetails('${userId}')"><td>${user.email}</td><td>${user.full_name}</td><td>${user.hostel_id}</td><td>${user.phone_number}</td><td>${user.hostel_name}</td><td>${user.last_login}</td><td>${totalLaundryItems}</td><td>${user.verified ? 'Yes' : 'No'}</td></tr>`;
-            });
-            userDataTbody.innerHTML = html;
-            document.getElementById('userDataContainer').style.display = 'block';
-        } else {
-            userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">No user data found</td></tr>';
-        }
-    }, (error) => {
-        console.error('Error fetching user data:', error);
-        userDataTbody.innerHTML = '<tr><td colspan="8" class="text-center">Error fetching user data</td></tr>';
-    });
-}
-
-// Call fetchAllUserData function when the page loads
-fetchAllUserData();
 
     </script>
 
